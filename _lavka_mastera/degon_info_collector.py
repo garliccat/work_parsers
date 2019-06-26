@@ -24,7 +24,10 @@ def get_data(html):
 
 	soup = BS(html, 'lxml')
 
-	category = soup.find('div', {'class':'b-layout__content'}).find('h1', {'class':'b-title'}).get_text(strip=True)
+	try:
+		category = soup.find('h1', {'class':'b-caption'}).get_text(strip=True)
+	except:
+		print('unable to locate category')
 	#cards = soup.find('ul', {'class':'b-product-gallery'}).find_all('li', {'class':'b-online-edit b-product-gallery__item  js-rtb-partner'})
 	try:
 		cards = soup.find_all('li', {'data-qaid':'product-block'})
@@ -34,11 +37,11 @@ def get_data(html):
 	print('cards on page: ' + str(len(cards)))
 
 	for card in cards:
-		art = card.find('div', {'class':'b-product-gallery__sku'}).get_text(strip=True)
+		art = card.find('span', {'class':'b-product-gallery__sku b-goods-sku'}).get_text(strip=True)
 		#art = ''
 		description = card.find('a', {'id':re.compile('link_to_product_')}).get_text(strip=True)
 		#description = ''
-		price = card.find('span', {'class':'b-product-gallery__current-price'}).get_text(strip=True).split('руб')[0].replace(u'\xa0', u'')
+		price = card.find('span', {'class':'b-goods-price__value b-goods-price__value_type_current'}).get_text(strip=True).split('руб')[0].replace(u'\xa0', u'')
 		#price = ''
 		url = card.find('a', {'class':'b-product-gallery__image-link'}).get('href')
 		#url = ''
@@ -50,7 +53,7 @@ def get_data(html):
 	
 
 def write_csv(data):
-	with open('degon_parsed_unfo.csv', 'a', newline='', encoding='utf-16') as f:
+	with open('degon_parsed_data.csv', 'a', newline='', encoding='utf-16') as f:
 		#newline - to avoid blank rows after each record
 		#encoding utf-16 - we are in russia, thats all
 		writer = csv.writer(f, delimiter=';')
