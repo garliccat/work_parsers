@@ -35,7 +35,5 @@ def main():
 	#url = 'http://mebelotfabrik.ru/sellers//sellers/?limit=1063'
 	#print(get_data(get_html(url)))
 
-
-
 if __name__ == '__main__':
 	main()
