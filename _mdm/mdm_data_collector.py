@@ -7,17 +7,21 @@ import datetime
 '''urls for parsing are from the mdm_urls.csv
 '''
 
+cookies = {} # NEED COOKIES.TXT FILE
+with open("cookies.txt") as f:
+    for line in f:
+       (key, val) = line.split()
+       cookies[key] = val
+
 
 def get_html(url):
 	try:
-		r = requests.get(url)
+		r = requests.get(url, cookies=cookies)
 	except:
 		print('unable to reach page')
 		return None
 
 	return r.text
-
-
 
 
 def get_data(html):
@@ -31,21 +35,22 @@ def get_data(html):
 	for i in range(0, cards):
 		description = soup.find_all('div', {'class':'cat-name'})[i].get_text(strip=True)
 		art = soup.find_all('div', {'class':'cat-info'})[i].get_text(strip=True)
-		price = soup.find_all('div', {'class':'cat-price'})[i].get_text(strip=True).split('руб.')[0]
+		price_wholesale = soup.find_all('div', {'class':'cat-price'})[i].get_text(strip=True).split('руб.')[0].replace(' ', '').replace('.', ',')
+		price_retail = soup.find_all('div', {'class':'cat-price-info'})[i].get_text(strip=True).split('руб.')[0].replace(' ', '').replace('.', ',')
 
 		date = datetime.date.today()
 
-		print({'description':description, 'art':art, 'price':price, 'date':str(date)})
-		write_csv({'description':description, 'art':art, 'price':price, 'date':str(date)})
+		print({'art':art, 'description':description, 'price_retail':price_retail, 'price_wholesale':price_wholesale, 'date':str(date)})
+		write_csv({'art':art, 'description':description, 'price_retail':price_retail, 'price_wholesale':price_wholesale, 'date':str(date)})
 
 	
 
 def write_csv(data):
-	with open('mdm_parsed_info.csv', 'a', newline='', encoding='utf-16') as f:
+	with open('mdm_collected_data.csv', 'a', newline='', encoding='utf-16') as f:
 		#newline - to avoid blank rows after each record
 		#encoding utf-16 - we are in russia, thats all
 		writer = csv.writer(f, delimiter=';')
-		writer.writerow([data['description'], data['art'], data['price'], data['date']])
+		writer.writerow([data['art'], data['description'], data['price_retail'], data['price_wholesale'], data['date']])
 
 
 
