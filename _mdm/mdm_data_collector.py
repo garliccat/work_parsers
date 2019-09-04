@@ -4,14 +4,17 @@ import csv
 import codecs
 import datetime
 
-'''urls for parsing are from the mdm_urls.csv
+# urls for parsing are from the mdm_urls.csv
+'''
+cookies.txt file must consists of:
+PHPSESSID WHATEVERVALUEYOUHAVE
 '''
 
-cookies = {} # NEED COOKIES.TXT FILE
-with open("cookies.txt") as f:
-    for line in f:
-       (key, val) = line.split()
-       cookies[key] = val
+cookies = {}
+f = open('cookies.txt', 'r')
+f = f.read()
+(key, val) = f.split()
+cookies[key] = val
 
 
 def get_html(url):
