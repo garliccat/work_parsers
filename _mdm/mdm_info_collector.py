@@ -41,7 +41,7 @@ def get_data(html):
 	
 
 def write_csv(data):
-	with open('mdm_parsed_unfo.csv', 'a', newline='', encoding='utf-16') as f:
+	with open('mdm_parsed_info.csv', 'a', newline='', encoding='utf-16') as f:
 		#newline - to avoid blank rows after each record
 		#encoding utf-16 - we are in russia, thats all
 		writer = csv.writer(f, delimiter=';')
